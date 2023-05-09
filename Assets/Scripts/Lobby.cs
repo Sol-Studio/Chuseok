@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.Networking;
+using System.Collections;
+using System.IO;
 
 public class Lobby : MonoBehaviour
 {
@@ -58,7 +61,7 @@ public class Lobby : MonoBehaviour
                 ws.myAnimal = animals[Array.IndexOf(room.teams[ws.myTeam].players, ws.socket.Id)];
                 ws.room = room;
                 play.transform.parent.gameObject.SetActive(false);
-                SceneManager.LoadScene("Game");
+                SceneManager.LoadScene("Assets/BundledAssets/testbundle/Game.unity");
             });
         });
         ws.JoinRoom(roomId.text);
@@ -98,5 +101,16 @@ public class Lobby : MonoBehaviour
     public void DeactivateCredit()
     {
         credit.SetActive(false);
+    }
+    void Start()
+    {
+        StartCoroutine(DownloadAssetBundle());
+    }
+    public IEnumerator DownloadAssetBundle()
+    {
+        var uwr = UnityWebRequestAssetBundle.GetAssetBundle("http://114.207.98.231:8000/update-bundle");
+        yield return uwr.SendWebRequest();
+        DownloadHandlerAssetBundle.GetContent(uwr);
+        ToastMessage.Instrance.showMessage("최신버전으로 업데이트되었습니다.", 3f);
     }
 }

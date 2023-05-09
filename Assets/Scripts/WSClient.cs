@@ -13,7 +13,7 @@ public class WSClient : MonoBehaviour
     public int myTeam;
     public string myAnimal;
     public Room room;
-
+    public UnityEngine.Object mainScene;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +59,10 @@ public class WSClient : MonoBehaviour
             ToastMessage.Instrance.showMessage("서버에 연결 재시도중... (" + e.ToString() + ")", 3f);
             Debug.Log($"{DateTime.Now} Reconnecting: attempt = {e}");
         };
+        socket.On("old-client", (data) =>
+        {
+            ToastMessage.Instrance.showMessage("오래된 클라이언트입니다. 업데이트해주세요.", 100f);
+        });
         Debug.Log("Connecting...");
         socket.Connect();
     }
